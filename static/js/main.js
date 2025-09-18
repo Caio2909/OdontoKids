@@ -41,96 +41,136 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingSpinner.classList.toggle('hidden', !isLoading);
     }
 
-    // --- DADOS DO AVATAR ---
+    // --- DADOS DO AVATAR (CORRIGIDOS CONFORME A DOCUMENTAÇÃO) ---
     const avatarPartsData = {
-        skin: [
-            { id: 'skin1', color: '#F2D5B7' },
-            { id: 'skin2', color: '#D8B08C' },
-            { id: 'skin3', color: '#A0765E' },
-            { id: 'skin4', color: '#6E4E3D' },
-        ],
-        hair: [
-            { id: 'hair1', svg: `<path d="M50 20 Q50 0 100 20 L100 50 Q50 60 0 50 L0 20 Q50 0 50 20 Z" fill="#333"/>` },
-            { id: 'hair2', svg: `<path d="M0 30 Q50 -10 100 30 L100 50 Q50 70 0 50 Z" fill="#A52A2A"/>` },
-            { id: 'hair3', svg: `<path d="M0 25 C 20 10, 80 10, 100 25 L 100 50 Q 50 65 0 50 Z" fill="#FFFF00"/>` },
-        ],
-        eyes: [
-            { id: 'eyes1', svg: `<circle cx="35" cy="60" r="5" fill="#000"/><circle cx="65" cy="60" r="5" fill="#000"/>` },
-            { id: 'eyes2', svg: `<rect x="30" y="55" width="10" height="7" fill="#000"/><rect x="60" y="55" width="10" height="7" fill="#000"/>` },
-            { id: 'eyes3', svg: `<path d="M30 60 Q35 55 40 60 M60 60 Q65 55 70 60" stroke="#000" fill="none" stroke-width="2"/>` },
-        ],
-        mouth: [
-            { id: 'mouth1', svg: `<path d="M40 85 Q50 95 60 85" stroke="#000" fill="none" stroke-width="2"/>` }, // Smile
-            { id: 'mouth2', svg: `<path d="M40 90 Q50 80 60 90" stroke="#000" fill="none" stroke-width="2"/>` }, // Frown
-            { id: 'mouth3', svg: `<line x1="40" y1="88" x2="60" y2="88" stroke="#000" stroke-width="2"/>` }, // Neutral
-        ],
-        clothes: [
-                { id: 'clothes1', svg: `<path d="M20 100 L80 100 L80 180 L20 180 Z" fill="#3B82F6"/>` }, // Blue shirt
-                { id: 'clothes2', svg: `<path d="M20 100 L80 100 L80 180 L20 180 Z" fill="#EC4899"/>` }, // Pink shirt
-                { id: 'clothes3', svg: `<path d="M20 100 L80 100 L80 180 L20 180 Z" fill="#22C55E"/>` }, // Green shirt
-        ]
-    };
+
+    top: ['shortFlat', 'shortWaved', 'curvy', 'fro', 'straightAndStrand', 'bob', 'curly'],
+    hairColor: ['a55728', '2c1b18', 'b58143', 'd6b370', 'e8e1e1', 'ecdcbf', 'f59797'],
+    accessories: [ 'prescription01', 'prescription02', 'round', 'sunglasses', 'none'],
+    clothing: ['blazerAndShirt', 'blazerAndSweater', 'collarAndSweater', 'graphicShirt', 'hoodie', 'overall', 'shirtCrewNeck'],
+    eyebrows: ['default', 'defaultNatural', 'flatNatural', 'raisedExcited', 'sadConcerned'],
+    mouth: ['default', 'concerned', 'disbelief', 'eating', 'grimace', 'sad', 'screamOpen', 'serious', 'smile', 'twinkle'],
+    skinColor: ['614335', 'd08b5b', 'ae5d29', 'edb98a', 'ffdbb4', 'fd9841', 'f8d25c'] // Also updated with valid hex codes
+};
+
 
     let currentAvatar = {
-        skin: avatarPartsData.skin[0].id,
-        hair: avatarPartsData.hair[0].id,
-        eyes: avatarPartsData.eyes[0].id,
-        mouth: avatarPartsData.mouth[0].id,
-        clothes: avatarPartsData.clothes[0].id,
+        top: 'shortFlat',
+        accessories: 'prescription01',
+        hairColor: 'a55728',
+        clothing: 'hoodie',
+        eyes: 'default',
+        eyebrows: 'default',
+        mouth: 'smile',
+        skinColor: 'edb98a'
     };
+     const translations = {
+         categories: {
+             top: 'Cabelo',
+             hairColor: 'Cor do Cabelo',
+             accessories: 'Acessórios',
+             clothing: 'Roupa',
+             eyebrows: 'Sobrancelhas',
+             mouth: 'Boca',
+             skinColor: 'Cor de Pele'
+         },
+         top: {
+             shortFlat: 'Curto Liso',
+             shortWaved: 'Curto Ondulado',
+             curvy: 'Encaracolado',
+             fro: 'Afro',
+             straightAndStrand: 'Liso com Franja',
+             bob: 'Chanel',
+             curly: 'Cacheado',
+         },
+         accessories: {
+             prescription01: 'Óculos de Grau 1',
+             prescription02: 'Óculos de Grau 2',
+             round: 'Óculos Redondo',
+             sunglasses: 'Óculos de Sol',
+             none: 'Nenhum'
+         },
+         clothing: {
+             blazerAndShirt: 'Blazer e Camisa',
+             blazerAndSweater: 'Blazer e Suéter',
+             collarAndSweater: 'Gola e Suéter',
+             graphicShirt: 'Camiseta Estampada',
+             hoodie: 'Moletom',
+             overall: 'Macacão',
+             shirtCrewNeck: 'Camiseta Gola Careca'
+         },
+         eyebrows: {
+             default: 'Padrão',
+             defaultNatural: 'Natural',
+             flatNatural: 'Reta',
+             raisedExcited: 'Animada',
+             sadConcerned: 'Preocupada',
+         },
+         mouth: {
+             default: 'Padrão',
+             concerned: 'Preocupada',
+             disbelief: 'Incrédula',
+             eating: 'Comendo',
+             grimace: 'Careta',
+             sad: 'Triste',
+             screamOpen: 'Gritando',
+             serious: 'Séria',
+             smile: 'Sorrindo',
+             twinkle: 'Radiante'
+         }
+     };
 
     const avatarPreview = document.getElementById('avatar-preview');
 
     function renderAvatar(container, avatarConfig, expression = 'normal') {
-        const skinData = avatarPartsData.skin.find(s => s.id === avatarConfig.skin);
-        const hairData = avatarPartsData.hair.find(h => h.id === avatarConfig.hair);
-        const eyesData = avatarPartsData.eyes.find(e => e.id === avatarConfig.eyes);
-        let mouthData;
-
-        switch(expression) {
-            case 'happy':
-                mouthData = avatarPartsData.mouth[0];
-                break;
-            case 'sad':
-                mouthData = avatarPartsData.mouth[1];
-                break;
-            default:
-                mouthData = avatarPartsData.mouth.find(m => m.id === avatarConfig.mouth);
-        }
-
-        const clothesData = avatarPartsData.clothes.find(c => c.id === avatarConfig.clothes);
-
-        container.innerHTML = `
-            <svg viewBox="0 0 100 150" class="w-full h-full">
-                <!-- Corpo -->
-                <path d="M20 100 L80 100 L80 180 L20 180 Z" fill="${skinData.color}"/>
-                ${clothesData.svg}
-
-                <!-- Cabeça -->
-                <circle cx="50" cy="50" r="40" fill="${skinData.color}"/>
-                
-                <!-- Partes -->
-                ${hairData.svg}
-                ${eyesData.svg}
-                ${mouthData.svg}
-            </svg>
-        `;
+    const baseUrl = 'https://api.dicebear.com/9.x/avataaars/svg?';
+    let options = { ...avatarConfig }; // Remove accessoriesProbability: 100
+    if (avatarConfig.accessories === 'none' || avatarConfig.accessories === 'blank') {
+        options.accessoriesProbability = 0;
+        delete options.accessories; // Remove a opção accessories
+    } else {
+        options.accessoriesProbability = 100; // Força exibição do acessório selecionado
+    }
+    switch(expression) {
+        case 'happy':
+            options.mouth = 'smile';
+            options.eyes = 'happy';
+            break;
+        case 'sad':
+            options.mouth = 'sad';
+            options.eyes = 'cry';
+            break;
+        case 'normal':
+            options.mouth = 'default'
+            options.eyes = 'default'
     }
 
+    const params = new URLSearchParams(options);
+    const avatarUrl = `${baseUrl}${params.toString()}`;
+
+    container.innerHTML = `<img src="${avatarUrl}" alt="Avatar" class="w-full h-full">`;
+}
+
     function setupAvatarOptions() {
-        const createOptionButton = (item, type) => {
+        const createOptionButton = (type, value) => {
             const button = document.createElement('button');
-            button.className = 'option-button border-2 border-gray-300 rounded-lg p-2';
-            if (type === 'skin' || type === 'clothes') {
-                button.style.backgroundColor = item.color || item.svg.match(/fill="([^"]+)"/)[1];
-                button.style.width = '40px';
-                button.style.height = '40px';
+            button.className = 'option-button bg-sky-200 text-sky-800 text-sm p-2 rounded-lg';
+
+            // Define o texto ou a cor do botão
+            if (type === 'hairColor' || type === 'skinColor') {
+                button.style.backgroundColor = `#${value}`;
+                button.style.width = '30px';
+                button.style.height = '30px';
+                button.title = value; // Mostra o código da cor ao passar o mouse
             } else {
-                button.innerHTML = `<svg viewBox="0 0 100 100" class="w-10 h-10">${item.svg}</svg>`;
+                // Busca a tradução. Se não encontrar, usa o valor original.
+                button.textContent = translations[type]?.[value] || value;
             }
 
+            button.dataset.value = value;
+
             button.onclick = () => {
-                currentAvatar[type] = item.id;
+                currentAvatar[type] = value;
                 renderAvatar(avatarPreview, currentAvatar);
                 updateSelectedButton(type);
             };
@@ -139,18 +179,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const updateSelectedButton = (type) => {
             const container = document.getElementById(`${type}-options`);
-            Array.from(container.children).forEach((btn, index) => {
-                btn.classList.toggle('selected', avatarPartsData[type][index].id === currentAvatar[type]);
+            Array.from(container.children).forEach(btn => {
+                btn.classList.toggle('selected', btn.dataset.value === currentAvatar[type]);
             });
         };
 
         Object.keys(avatarPartsData).forEach(type => {
             const container = document.getElementById(`${type}-options`);
-            container.innerHTML = '';
-            avatarPartsData[type].forEach(item => {
-                container.appendChild(createOptionButton(item, type));
-            });
-            updateSelectedButton(type);
+            if (container) {
+                container.innerHTML = '';
+                // Define o título da categoria usando o objeto de traduções
+                container.parentElement.querySelector('h3').textContent = translations.categories[type] || type;
+
+                avatarPartsData[type].forEach(value => {
+                    container.appendChild(createOptionButton(type, value));
+                });
+                updateSelectedButton(type);
+            }
         });
     }
 
@@ -324,7 +369,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const role = document.getElementById('register-role').value;
         authError.textContent = '';
 
-        // Validação de dados com JavaScript
         if (!name || !email || !password) {
             authError.textContent = 'Por favor, preencha todos os campos.';
             return;
@@ -373,7 +417,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const data = await response.json();
             if (response.ok) {
-                await checkLoginStatus(); // Carrega os dados do usuário após o login
+                await checkLoginStatus();
             } else {
                 authError.textContent = data.message || 'Erro no login.';
             }
@@ -417,7 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('start-assessment-button').addEventListener('click', startAssessment);
     document.getElementById('back-to-dashboard-button').addEventListener('click', () => {
-        checkLoginStatus(); // Recarrega os dados para mostrar o histórico atualizado
+        checkLoginStatus();
     });
     document.getElementById('edit-avatar-button').addEventListener('click', () => {
         currentAvatar = userProfile.avatar;
