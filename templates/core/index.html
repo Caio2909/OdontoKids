@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OdontoKids - Avaliação Divertida</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .hidden {
+            display: none;
+        }
+        .avatar-preview {
+            width: 200px;
+            height: 300px;
+            position: relative;
+            background-color: #e0f2fe;
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 4px solid #38bdf8;
+        }
+        .avatar-part {
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+        .option-button {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .option-button:hover {
+            transform: scale(1.05);
+        }
+        .option-button.selected {
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.4);
+        }
+        .assessment-card {
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .assessment-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-sky-100 text-gray-800 flex items-center justify-center min-h-screen">
+
+    <div id="loading-spinner" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-sky-500"></div>
+    </div>
+
+    <div class="container mx-auto p-4 max-w-4xl">
+        <!-- TELA INICIAL / LOGIN -->
+        <div id="auth-page" class="bg-white p-8 rounded-2xl shadow-lg text-center">
+            <h1 class="text-4xl font-bold text-sky-600 mb-2">Bem-vindo ao OdontoKids!</h1>
+            <p class="text-gray-600 mb-8">Uma aventura divertida no dentista!</p>
+
+            <div id="auth-container">
+                <div id="login-form">
+                    <h2 class="text-2xl font-semibold mb-4 text-sky-500">Entrar</h2>
+                    <input type="email" id="login-email" placeholder="Email" class="w-full max-w-sm mx-auto p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400">
+                    <input type="password" id="login-password" placeholder="Senha" class="w-full max-w-sm mx-auto p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400">
+                    <button id="login-button" class="w-full max-w-sm mx-auto bg-sky-500 text-white p-3 rounded-lg font-semibold hover:bg-sky-600 transition-colors">Entrar</button>
+                    <p class="mt-4 text-sm">Não tem uma conta? <a href="#" id="show-register-link" class="text-sky-600 hover:underline">Cadastre-se</a></p>
+                </div>
+
+                <div id="register-form" class="hidden">
+                    <h2 class="text-2xl font-semibold mb-4 text-sky-500">Cadastre-se</h2>
+                    <input type="text" id="register-name" placeholder="Nome Completo" class="w-full max-w-sm mx-auto p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400">
+                    <input type="email" id="register-email" placeholder="Email" class="w-full max-w-sm mx-auto p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400">
+                    <input type="password" id="register-password" placeholder="Senha" class="w-full max-w-sm mx-auto p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400">
+                     <div class="max-w-sm mx-auto mb-4">
+                        <select id="register-role" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-400">
+                            <option value="crianca">Sou Criança</option>
+                            <option value="dentista">Sou Odontopediatra</option>
+                        </select>
+                    </div>
+                    <button id="register-button" class="w-full max-w-sm mx-auto bg-teal-500 text-white p-3 rounded-lg font-semibold hover:bg-teal-600 transition-colors">Cadastrar</button>
+                    <p class="mt-4 text-sm">Já tem uma conta? <a href="#" id="show-login-link" class="text-sky-600 hover:underline">Entrar</a></p>
+                </div>
+            </div>
+             <p id="auth-error" class="text-red-500 mt-4 text-sm"></p>
+        </div>
+
+        <!-- TELA DE CRIAÇÃO DE AVATAR -->
+        <div id="avatar-creator-page" class="hidden bg-white p-8 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-sky-600 mb-4 text-center">Crie seu Amigo Avatar!</h1>
+            <div class="flex flex-col md:flex-row gap-8 items-center md:items-start">
+                <div class="w-full md:w-1/3 flex flex-col items-center">
+                    <div id="avatar-preview" class="avatar-preview mb-4">
+                        <!-- SVGs do Avatar serão inseridos aqui pelo JS -->
+                    </div>
+                    <button id="save-avatar-button" class="w-full bg-green-500 text-white p-3 rounded-lg font-semibold hover:bg-green-600 transition-colors">Salvar e Continuar</button>
+                </div>
+
+                <div class="w-full md:w-2/3">
+                    <div id="avatar-options">
+                        <!-- Seções de Opções (Pele, Cabelo, etc.) -->
+                        <div class="mb-6">
+                            <h3 class="font-semibold text-lg text-sky-700 mb-2">Cor de Pele</h3>
+                            <div id="skin-options" class="flex flex-wrap gap-3"></div>
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="font-semibold text-lg text-sky-700 mb-2">Cabelo</h3>
+                            <div id="hair-options" class="flex flex-wrap gap-3"></div>
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="font-semibold text-lg text-sky-700 mb-2">Olhos</h3>
+                            <div id="eyes-options" class="flex flex-wrap gap-3"></div>
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="font-semibold text-lg text-sky-700 mb-2">Boca</h3>
+                            <div id="mouth-options" class="flex flex-wrap gap-3"></div>
+                        </div>
+                        <div class="mb-6">
+                            <h3 class="font-semibold text-lg text-sky-700 mb-2">Roupa</h3>
+                            <div id="clothes-options" class="flex flex-wrap gap-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD DA CRIANÇA -->
+        <div id="child-dashboard-page" class="hidden bg-white p-8 rounded-2xl shadow-lg text-center">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-sky-600">Olá, <span id="child-name"></span>!</h1>
+                <button id="logout-button" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 text-sm">Sair</button>
+            </div>
+
+            <p class="text-gray-600 mb-6">Pronto para uma nova aventura?</p>
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-8">
+                <div id="dashboard-avatar-display" class="w-48 h-72 bg-sky-100 rounded-lg border-4 border-sky-400 overflow-hidden">
+                    <!-- Avatar salvo será exibido aqui -->
+                </div>
+                <div class="flex flex-col gap-4">
+                     <button id="start-assessment-button" class="bg-teal-500 text-white p-4 rounded-lg font-semibold text-lg hover:bg-teal-600 transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-rocket"></i> Iniciar Avaliação
+                    </button>
+                    <button id="edit-avatar-button" class="bg-sky-500 text-white p-4 rounded-lg font-semibold text-lg hover:bg-sky-600 transition-colors flex items-center justify-center gap-2">
+                        <i class="fas fa-user-edit"></i> Mudar Avatar
+                    </button>
+                </div>
+            </div>
+             <div class="mt-8">
+                <h2 class="text-2xl font-semibold text-sky-700 mb-4">Histórico de Avaliações</h2>
+                <div id="assessment-history" class="text-left max-h-60 overflow-y-auto bg-gray-50 p-4 rounded-lg">
+                    <p>Nenhuma avaliação encontrada.</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- TELA DE AVALIAÇÃO -->
+        <div id="assessment-page" class="hidden bg-white p-8 rounded-2xl shadow-lg text-center">
+            <h1 id="assessment-question-title" class="text-3xl font-bold text-sky-600 mb-2">Como você se sente agora?</h1>
+            <p class="text-gray-600 mb-8">Escolha a imagem que mais parece com você.</p>
+            <div id="assessment-options-container" class="flex justify-center items-stretch gap-4 md:gap-8 flex-wrap">
+                <!-- Opções da avaliação serão inseridas aqui -->
+            </div>
+            <div class="mt-8">
+                <p class="text-gray-500">Pergunta <span id="current-question-number">1</span> de <span id="total-question-number"></span></p>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 mt-2">
+                    <div id="progress-bar" class="bg-sky-500 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TELA DE RESULTADOS -->
+        <div id="results-page" class="hidden bg-white p-8 rounded-2xl shadow-lg text-center">
+            <h1 class="text-4xl font-bold text-green-500 mb-4">Parabéns, você completou!</h1>
+            <p class="text-gray-700 text-lg mb-6">Aqui está o seu resultado:</p>
+            <div class="bg-sky-100 p-6 rounded-lg inline-block mb-6">
+                <p class="text-xl text-sky-800">Sua pontuação de emoção foi:</p>
+                <p id="result-score" class="text-6xl font-bold text-sky-600"></p>
+            </div>
+            <p id="result-message" class="text-lg text-gray-600 mb-8 max-w-md mx-auto"></p>
+            <button id="back-to-dashboard-button" class="bg-sky-500 text-white p-3 rounded-lg font-semibold hover:bg-sky-600 transition-colors">Voltar para o Início</button>
+        </div>
+
+    </div>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
